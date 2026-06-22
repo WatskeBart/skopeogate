@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenShift Upload</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="card">
+        <div class="logo">OpenShift</div>
+        <h2>Upload OCI Archive</h2>
+        <p class="destination">Destination: <code>{destination}</code></p>
+        <form method="post" action="/upload" enctype="multipart/form-data">
+            <div class="drop-zone" onclick="document.getElementById('file-input').click()">
+                <div class="drop-zone-icon">&#128230;</div>
+                <div class="drop-zone-text">Click to select a tarball</div>
+                <div class="drop-zone-hint">Accepts .tar files</div>
+                <label class="file-label" onclick="event.stopPropagation()">
+                    Browse files
+                    <input type="file" id="file-input" name="file" accept=".tar"
+                        onchange="document.getElementById('file-name').textContent = this.files[0]?.name ?? ''">
+                </label>
+            </div>
+            <div id="file-name"></div>
+            <br>
+            <button type="submit">Upload &amp; Copy</button>
+        </form>
+    </div>
+</body>
+</html>

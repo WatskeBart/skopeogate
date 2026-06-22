@@ -1,0 +1,10 @@
+# Negeer alle bestanden, inclusief verborgen bestanden
+*
+.*
+
+# Uitgezonderd deze bestanden/directories
+!main.py
+!static/
+!packages/
+!wheels/
+!builder.sh

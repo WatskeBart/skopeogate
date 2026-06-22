@@ -1,0 +1,144 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0f1117;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #e0e0e0;
+}
+
+.card {
+    background-color: #1a1d27;
+    border: 1px solid #2e3147;
+    border-radius: 12px;
+    padding: 40px 48px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #ee0000, #c00000);
+    border-radius: 10px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -1px;
+}
+
+h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.destination {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 28px;
+}
+
+.destination code {
+    background-color: #252836;
+    color: #a78bfa;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+}
+
+.drop-zone {
+    border: 2px dashed #2e3147;
+    border-radius: 8px;
+    padding: 32px 20px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s, background-color 0.2s;
+    cursor: pointer;
+}
+
+.drop-zone:hover {
+    border-color: #ee0000;
+    background-color: rgba(238, 0, 0, 0.04);
+}
+
+.drop-zone-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.drop-zone-text {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.drop-zone-hint {
+    font-size: 0.78rem;
+    color: #555;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-label {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 16px;
+    background-color: #252836;
+    border: 1px solid #2e3147;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    color: #aaa;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.file-label:hover {
+    background-color: #2e3147;
+    color: #e0e0e0;
+}
+
+#file-name {
+    font-size: 0.82rem;
+    color: #a78bfa;
+    margin-top: 10px;
+    min-height: 18px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #ee0000, #c00000);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+}
+
+button[type="submit"]:hover {
+    opacity: 0.9;
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}
