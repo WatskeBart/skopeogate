@@ -26,7 +26,8 @@ SKOPEO_ARGS=--dest-tls-verify=false --src-creds=gebruiker:wachtwoord
 
 Alle bestanden zijn beschikbaar tijdens de image build.
 
-> [!important] Zorg dat de mappen `./packages` en `./wheels` zijn aangemaakt!
+> [!IMPORTANT]
+> Zorg dat de mappen `./packages` en `./wheels` zijn aangemaakt!
 
 ## Binnenhalen van benodigde dependencies (via internet)
 
