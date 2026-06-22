@@ -1,4 +1,5 @@
 import os
+import shlex
 import subprocess
 import tempfile
 from pathlib import Path
@@ -7,11 +8,21 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic_settings import BaseSettings
 
-# Aanpassen naar definitieve bestemming, bijv. "docker://mijn.registry.com:5000/myrepo"
-DESTINATION = "dir:/tmp/artifact_output"
-MAX_SIZE    = 100 * 1024 * 1024  # 100 MB
-STATIC_DIR  = Path(__file__).parent / "static"
+
+class Settings(BaseSettings):
+    destination: str = "dir:/tmp/artifact_output"
+    max_size_mb: int = 100
+    skopeo_args: str = "--dest-tls-verify=false"
+
+    @property
+    def max_size(self) -> int:
+        return self.max_size_mb * 1024 * 1024
+
+
+settings = Settings()
+STATIC_DIR = Path(__file__).parent / "static"
 
 app = FastAPI(docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -28,7 +39,7 @@ def docs() -> HTMLResponse:
         oauth2_redirect_url=None,
     )
 
-INDEX_HTML = (STATIC_DIR / "index.html").read_text().format(destination=DESTINATION)
+INDEX_HTML = (STATIC_DIR / "index.html").read_text().format(destination=settings.destination)
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -41,13 +52,12 @@ async def upload(file: UploadFile = File(...)):
     Ontvangt een OCI-archive (.tar), slaat het tijdelijk op en kopieert het
     naar de geconfigureerde bestemming via skopeo. Toont het resultaat als HTML.
     """
-    # Controleer de bestandsgrootte als de header aanwezig is. Vroegtijdige controle op te grote bestanden.
-    if file.size and file.size > MAX_SIZE:
-        raise HTTPException(status_code=413, detail="File too large (max 100 MB).")
+    if file.size and file.size > settings.max_size:
+        raise HTTPException(status_code=413, detail=f"File too large (max {settings.max_size_mb} MB).")
 
     contents = await file.read()
-    if len(contents) > MAX_SIZE:
-        raise HTTPException(status_code=413, detail="File too large (max 100 MB).")
+    if len(contents) > settings.max_size:
+        raise HTTPException(status_code=413, detail=f"File too large (max {settings.max_size_mb} MB).")
 
     if not file.filename or not file.filename.endswith(".tar"):
         raise HTTPException(status_code=400, detail="Only .tar files are accepted.")
@@ -58,7 +68,7 @@ async def upload(file: UploadFile = File(...)):
 
     try:
         result = subprocess.run(
-            ["skopeo", "copy", "--dest-tls-verify=false", f"oci-archive:{tmp_path}", DESTINATION],
+            ["skopeo", "copy", *shlex.split(settings.skopeo_args), f"oci-archive:{tmp_path}", settings.destination],
             capture_output=True, text=True
         )
         output = result.stdout + result.stderr

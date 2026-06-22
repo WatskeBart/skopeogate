@@ -12,12 +12,12 @@ if [ "$MODE" = "offline" ]; then
         exit 1
     fi
     rpm -Uvh --nodeps ./packages/*.rpm
-    pip install --no-cache-dir --no-index --find-links ./wheels/ "fastapi[standard]"
+    pip install --no-cache-dir --no-index --find-links ./wheels/ "fastapi[standard]" "pydantic-settings"
     rm -rf ./{packages,wheels}
 elif [ "$MODE" = "online" ]; then
     microdnf install -y skopeo
     microdnf clean all
-    pip install --no-cache-dir "fastapi[standard]>=0.136.1"
+    pip install --no-cache-dir "fastapi[standard]>=0.136.1" "pydantic-settings"
     rm -rf /var/cache/yum
     rm -rf ./{packages,wheels}
 else
