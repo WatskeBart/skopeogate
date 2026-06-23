@@ -65,14 +65,13 @@ async def upload(file: UploadFile = File(...)):
     with tempfile.NamedTemporaryFile(suffix=".tar", delete=False) as tmp:
         tmp.write(contents)
         tmp_path = tmp.name
-
-    try:
-        result = subprocess.run(
-            ["skopeo", "copy", *shlex.split(settings.skopeo_args), f"oci-archive:{tmp_path}", settings.destination],
-            capture_output=True, text=True
-        )
-        output = result.stdout + result.stderr
-        status = "Uitgevoerd" if result.returncode == 0 else "Gefaald!"
-        return f"<pre>{status}\n\n{output}</pre><a href='/'>Terug</a>"
-    finally:
-        os.unlink(tmp_path)
+        try:
+            result = subprocess.run(
+                ["skopeo", "copy", *shlex.split(settings.skopeo_args), f"oci-archive:{tmp_path}", settings.destination],
+                capture_output=True, text=True
+            )
+            output = result.stdout + result.stderr
+            status = "Uitgevoerd" if result.returncode == 0 else "Gefaald!"
+            return f"<pre>{status}\n\n{output}</pre><a href='/'>Terug</a>"
+        finally:
+            os.unlink(tmp_path)
