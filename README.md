@@ -17,9 +17,9 @@ Voorbeeld:
 
 ```
 SKOPEO_DESTINATION=docker://mijn.registry.com:5000/myrepo
-MAX_MB=200
 SKOPEO_USERNAME=gebruiker
 SKOPEO_PASSWORD_FILE=/run/secrets/skopeo-password
+MAX_MB=400
 ```
 
 ---
@@ -33,8 +33,8 @@ Alle bestanden zijn beschikbaar tijdens de image build.
 
 ## Binnenhalen van benodigde dependencies (via internet)
 
-- `podman run --rm -v "${PWD}/packages:/packages" --user root registry.access.redhat.com/ubi9/ubi:latest bash -c "dnf download --resolve --destdir /packages skopeo"`
-- `podman run --rm -v "${PWD}/wheels:/wheels" --user root registry.access.redhat.com/ubi9/python-312-minimal:latest pip download "fastapi[standard]>=0.136.1" pydantic-settings -d /wheels`
+- `podman run --rm -v "${PWD}/packages:/packages" --user root registry.access.redhat.com/ubi10/ubi:latest bash -c "dnf download --resolve --destdir /packages skopeo"`
+- `podman run --rm -v "${PWD}/wheels:/wheels" --user root registry.access.redhat.com/ubi10/python-312-minimal:latest pip download "fastapi[standard]" -d /wheels`
 
 ## Image bouwen
 
