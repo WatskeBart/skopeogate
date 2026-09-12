@@ -6,18 +6,20 @@ Webapplicatie om OCI-archieven (`.tar`) via een uploadformulier naar een skopeo-
 
 De applicatie wordt geconfigureerd via omgevingsvariabelen:
 
-| Variabele | Standaard | Beschrijving |
-|---|---|---|
-| `DESTINATION` | `dir:/tmp/artifact_output` | Skopeo-bestemmingsadres, bijv. `docker://mijn.registry.com:5000/myrepo` |
-| `MAX_SIZE_MB` | `100` | Maximale uploadgrootte in MB |
-| `SKOPEO_ARGS` | `--dest-tls-verify=false` | Extra argumenten die aan `skopeo copy` worden meegegeven |
+| Variabele | Verplicht | Standaard | Beschrijving |
+|---|---|---|---|
+| `SKOPEO_DESTINATION` | Ja | - | Skopeo-bestemmingsadres, bijv. `docker://mijn.registry.com:5000/myrepo` |
+| `SKOPEO_USERNAME` | Nee | - | Gebruikersnaam voor authenticatie bij de bestemming (`--dest-username`) |
+| `SKOPEO_PASSWORD_FILE` | Nee | - | Pad naar een bestand met het wachtwoord voor de bestemming (`--dest-password`) |
+| `MAX_MB` | Nee | `400` | Maximale uploadgrootte in MB |
 
 Voorbeeld:
 
 ```
-DESTINATION=docker://mijn.registry.com:5000/myrepo
-MAX_SIZE_MB=200
-SKOPEO_ARGS=--dest-tls-verify=false --src-creds=gebruiker:wachtwoord
+SKOPEO_DESTINATION=docker://mijn.registry.com:5000/myrepo
+MAX_MB=200
+SKOPEO_USERNAME=gebruiker
+SKOPEO_PASSWORD_FILE=/run/secrets/skopeo-password
 ```
 
 ---
