@@ -9,10 +9,10 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 # Aanpassen naar definitieve bestemming, bijv. "docker://mijn.registry.com:5000/myrepo"
-DESTINATION = os.environ["SKOPEO_DESTINATION"]
-MAX_MB      = int(os.environ.get("MAX_MB", "400"))
-MAX_SIZE    = MAX_MB * 1024 * 1024
-STATIC_DIR  = Path(__file__).parent / "static"
+DESTINATION = os.environ["SKOPEO_DESTINATION"]  # fmt: skip
+MAX_MB      = int(os.environ.get("MAX_MB", "400"))  # fmt: skip
+MAX_SIZE    = MAX_MB * 1024 * 1024  # fmt: skip
+STATIC_DIR  = Path(__file__).parent / "static"  # fmt: skip
 
 app = FastAPI(docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -29,12 +29,15 @@ def docs() -> HTMLResponse:
         oauth2_redirect_url=None,
     )
 
+
 INDEX_HTML = (STATIC_DIR / "index.html").read_text().format(destination=DESTINATION)
+
 
 @app.get("/", response_class=HTMLResponse)
 def index():
     """Geeft de startpagina terug met het uploadformulier."""
     return INDEX_HTML
+
 
 @app.post("/upload", response_class=HTMLResponse)
 async def upload(file: UploadFile = File(...)):
@@ -70,11 +73,12 @@ async def upload(file: UploadFile = File(...)):
     try:
         result = subprocess.run(
             ["skopeo", "copy", "--dest-tls-verify=false", *creds, f"oci-archive:{tmp_path}", DESTINATION],
-            capture_output=True, text=True, check=False
+            capture_output=True,
+            text=True,
+            check=False,
         )
         output = result.stdout + result.stderr
         status = "Uitgevoerd" if result.returncode == 0 else "Gefaald!"
         return f"<pre>{status}\n\n{output}</pre><a href='/'>Terug</a>"
     finally:
         os.unlink(tmp_path)
-
