@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 # Aanpassen naar definitieve bestemming, bijv. "docker://mijn.registry.com:5000/myrepo"
 DESTINATION = os.environ["SKOPEO_DESTINATION"]
-MAX_MB      = int(os.environ.get("MAX_MB", 400))
+MAX_MB      = int(os.environ.get("MAX_MB", "400"))
 MAX_SIZE    = MAX_MB * 1024 * 1024
 STATIC_DIR  = Path(__file__).parent / "static"
 
@@ -70,7 +70,7 @@ async def upload(file: UploadFile = File(...)):
     try:
         result = subprocess.run(
             ["skopeo", "copy", "--dest-tls-verify=false", *creds, f"oci-archive:{tmp_path}", DESTINATION],
-            capture_output=True, text=True
+            capture_output=True, text=True, check=False
         )
         output = result.stdout + result.stderr
         status = "Uitgevoerd" if result.returncode == 0 else "Gefaald!"
