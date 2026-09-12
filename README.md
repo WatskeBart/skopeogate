@@ -22,6 +22,25 @@ SKOPEO_PASSWORD_FILE=/run/secrets/skopeo-password
 MAX_MB=400
 ```
 
+Er is ook een [`.env-example`](.env-example)-bestand beschikbaar als startpunt. Kopieer dit naar `.env` en pas de waarden aan:
+
+```
+cp .env-example .env
+```
+
+---
+
+## Lokaal starten via `uv run`
+
+Naast de container-images kan de applicatie ook rechtstreeks lokaal worden gestart met [uv](https://docs.astral.sh/uv/).
+
+> [!IMPORTANT]
+> Zorg dat de vereiste omgevingsvariabelen (zie [Configuratie](#configuratie)) zijn ingesteld voordat je de applicatie start, bijvoorbeeld via een `.env`-bestand of door ze te exporteren in de shell.
+
+- `uv sync` — installeert de dependencies uit `pyproject.toml`/`uv.lock` in een virtuele omgeving
+- `uv run fastapi run main.py` — start de applicatie in productiemodus
+- `uv run fastapi dev main.py` — start de applicatie in ontwikkelmodus (met auto-reload)
+
 ---
 
 # Offline methode
