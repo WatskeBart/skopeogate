@@ -42,13 +42,15 @@ async def upload(file: UploadFile = File(...)):
     Ontvangt een OCI-archive (.tar), slaat het tijdelijk op en kopieert het
     naar de geconfigureerde bestemming via skopeo. Toont het resultaat als HTML.
     """
+    too_large_message = f"Bestand is te groot (max {MAX_MB}MB)."
+
     # Controleer de bestandsgrootte als de header aanwezig is. Vroegtijdige controle op te grote bestanden.
     if file.size and file.size > MAX_SIZE:
-        raise HTTPException(status_code=413, detail=f"Bestand is te groot (max {MAX_MB}MB).")
+        raise HTTPException(status_code=413, detail=too_large_message)
 
     contents = await file.read()
     if len(contents) > MAX_SIZE:
-        raise HTTPException(status_code=413, detail=f"Bestand is te groot (max {MAX_MB}MB).")
+        raise HTTPException(status_code=413, detail=too_large_message)
 
     if not file.filename or not file.filename.endswith(".tar"):
         raise HTTPException(status_code=400, detail="Alleen .tar bestanden worden geaccepteerd.")
@@ -58,15 +60,16 @@ async def upload(file: UploadFile = File(...)):
         tmp_path = tmp.name
 
     creds = []
-    if "SKOPEO_USERNAME" in os.environ:
-        creds.append(f"--dest-username={os.environ["SKOPEO_USERNAME"]}")
-    if "SKOPEO_PASSWORD_FILE" in os.environ:
-        with open(os.environ["SKOPEO_PASSWORD_FILE"], "rt") as f:
-            creds.append(f"--dest-password={f.read().strip()}")
-    
+    username = os.environ.get("SKOPEO_USERNAME")
+    if username:
+        creds.append(f"--dest-username={username}")
+    password_file = os.environ.get("SKOPEO_PASSWORD_FILE")
+    if password_file:
+        creds.append(f"--dest-password={Path(password_file).read_text().strip()}")
+
     try:
         result = subprocess.run(
-            ["skopeo", "copy", "--dest-tls-verify=false"] + creds + [f"oci-archive:{tmp_path}", DESTINATION],
+            ["skopeo", "copy", "--dest-tls-verify=false", *creds, f"oci-archive:{tmp_path}", DESTINATION],
             capture_output=True, text=True
         )
         output = result.stdout + result.stderr
