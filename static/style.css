@@ -26,7 +26,6 @@ body {
 }
 
 .logo {
-    width: 48px;
     height: 48px;
     background: linear-gradient(135deg, #ee0000, #c00000);
     border-radius: 10px;
